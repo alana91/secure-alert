@@ -14,7 +14,6 @@ class Event(models.Model):
     device_id = models.CharField(
         null=False,
         blank=False,
-        unique=True,
         max_length=64,
         validators=[MinLengthValidator(limit_value=3)],
         help_text="ID of the device that originated the event",

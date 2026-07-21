@@ -80,3 +80,65 @@ def test_pagination(client: APIClient):
     response = client.get("/events/")
     assert response.status_code == 200
     assert len(response.data["events"]) == 20
+
+
+@pytest.mark.django_db
+def test_summary_most_active_device(client: APIClient):
+    baker.make(Event, device_id="very_active", _quantity=3)
+    baker.make(Event, device_id="not_so_active_1", _quantity=1)
+    baker.make(Event, device_id="not_so_active_2", _quantity=2)
+    response = client.get("/events/summary/")
+    assert response.status_code == 200
+    assert response.data["total_events"] == 6
+    assert response.data["most_active_device"] == "very_active"
+
+
+@pytest.mark.django_db
+def test_summary_by_severity(client: APIClient):
+    baker.make(Event, severity="low", _quantity=2)
+    baker.make(Event, severity="medium", _quantity=4)
+    baker.make(Event, severity="high", _quantity=8)
+    response = client.get("/events/summary/")
+    assert response.status_code == 200
+    assert response.data["total_events"] == 14
+    assert response.data["by_severity"]["low"] == 2
+    assert response.data["by_severity"]["medium"] == 4
+    assert response.data["by_severity"]["high"] == 8
+
+
+@pytest.mark.django_db
+def test_summary_by_event_type(client: APIClient):
+    baker.make(Event, event_type="motion_detected", _quantity=2)
+    baker.make(Event, event_type="intrusion_alert", _quantity=4)
+    baker.make(Event, event_type="camera_offline", _quantity=8)
+    response = client.get("/events/summary/")
+    assert response.status_code == 200
+    assert response.data["total_events"] == 14
+    assert response.data["by_event_type"]["motion_detected"] == 2
+    assert response.data["by_event_type"]["intrusion_alert"] == 4
+    assert response.data["by_event_type"]["camera_offline"] == 8
+
+
+@pytest.mark.django_db
+def test_summary_high_severity_rate(client: APIClient):
+    baker.make(Event, severity="low", _quantity=1)
+    baker.make(Event, severity="medium", _quantity=1)
+    baker.make(Event, severity="high", _quantity=2)
+    response = client.get("/events/summary/")
+    assert response.status_code == 200
+    assert response.data["high_severity_rate"] == 0.5
+
+
+@pytest.mark.django_db
+def test_summary_with_zero_events(client: APIClient):
+    response = client.get("/events/summary/")
+    assert response.status_code == 200
+    assert response.data["total_events"] == 0
+    assert response.data["most_active_device"] == ""
+    assert response.data["by_severity"]["low"] == 0
+    assert response.data["by_severity"]["medium"] == 0
+    assert response.data["by_severity"]["high"] == 0
+    assert response.data["by_event_type"]["motion_detected"] == 0
+    assert response.data["by_event_type"]["intrusion_alert"] == 0
+    assert response.data["by_event_type"]["camera_offline"] == 0
+    assert response.data["high_severity_rate"] == 0.0
