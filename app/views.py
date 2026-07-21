@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Count
 from collections import defaultdict
+from drf_spectacular.utils import extend_schema
 
 
 class EventViewSet(
@@ -25,6 +26,7 @@ class EventViewSet(
     filterset_class = EventFilter
     pagination_class = EventPagination
 
+    @extend_schema(responses=SummarySerializer)
     @action(detail=False)
     def summary(self, requests):
         qs = self.get_queryset()
