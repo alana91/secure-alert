@@ -66,7 +66,6 @@ uv run manage.py runserver
 
 The application will be served at <http://localhost:8000>.
 
-
 ### Lint and format the code
 
 Using Task
@@ -80,6 +79,22 @@ Using the commands directly
 ```shell
 uv run ruff check
 uv run ruff format
+```
+
+### Create migrations
+
+Run whenever models are created or modified. This includes modifications such as in model field parameters, even for parameters like `help_text`. When in doubt, just run the command and check the output.
+
+Using tax
+
+```shell
+task create-migration
+```
+
+Using the command directly
+
+```shell
+uv run manage.py makemigrations
 ```
 
 ## Troubleshooting

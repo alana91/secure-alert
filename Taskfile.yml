@@ -13,7 +13,7 @@ tasks:
   create-migration:
     desc: Create a migration
     cmds:
-      - alembic revision --autogenerate
+      - uv run manage.py makemigrations
   migrate:
     desc: Migrate to latest revision
     cmds:
