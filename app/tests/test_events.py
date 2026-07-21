@@ -1,6 +1,7 @@
 import pytest
-from rest_framework.test import APIClient
 from model_bakery import baker
+from rest_framework.test import APIClient
+
 from app.models import Event
 
 

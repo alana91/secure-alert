@@ -10,6 +10,11 @@ tasks:
     cmds:
       - uv run ruff check
       - uv run ruff format
+  fix-imports:
+    desc: Organize imports using ruff and isort
+    cmds:
+      - uv run ruff check --select I --fix .
+      - uv run ruff format
   create-migration:
     desc: Create a migration
     cmds:

@@ -1,14 +1,16 @@
-from app.models import Event
-from app.serializers import EventSerializer, SummarySerializer
-from app.filters import EventFilter, SummaryFilter
+from collections import defaultdict
+
+from django.db.models import Count
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet
-from app.pagination import EventPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Count
-from collections import defaultdict
-from drf_spectacular.utils import extend_schema
+from rest_framework.viewsets import GenericViewSet
+
+from app.filters import EventFilter, SummaryFilter
+from app.models import Event
+from app.pagination import EventPagination
+from app.serializers import EventSerializer, SummarySerializer
 
 
 class EventViewSet(

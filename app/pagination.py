@@ -1,5 +1,6 @@
-from rest_framework.pagination import PageNumberPagination, Response
 from typing import Any
+
+from rest_framework.pagination import PageNumberPagination, Response
 
 
 class EventPagination(PageNumberPagination):
