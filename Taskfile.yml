@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  lint:
+    desc: Run linters and formatters
+    cmds:
+      - uv run ruff check
+      - uv run ruff format
+  create-migration:
+    desc: Create a migration
+    cmds:
+      - alembic revision --autogenerate
+  migrate:
+    desc: Migrate to latest revision
+    cmds:
+      - uv run manage.py migrate
+  start-app:
+    desc: Run application locally on port 8000
+    cmds:
+      - uv run manage.py runserver
