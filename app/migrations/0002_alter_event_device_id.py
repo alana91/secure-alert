@@ -5,15 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0001_initial'),
+        ("app", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='device_id',
-            field=models.CharField(help_text='ID of the device that originated the event', max_length=64, unique=True, validators=[django.core.validators.MinLengthValidator(limit_value=3)]),
+            model_name="event",
+            name="device_id",
+            field=models.CharField(
+                help_text="ID of the device that originated the event",
+                max_length=64,
+                unique=True,
+                validators=[django.core.validators.MinLengthValidator(limit_value=3)],
+            ),
         ),
     ]
