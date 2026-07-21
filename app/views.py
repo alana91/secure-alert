@@ -1,7 +1,9 @@
 from app.models import Event
 from app.serializers import EventSerializer
+from app.filters import EventFilter
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
+from app.pagination import EventPagination
 
 
 class EventViewSet(
@@ -16,3 +18,5 @@ class EventViewSet(
 
     queryset = Event.objects.all().order_by("-timestamp")
     serializer_class = EventSerializer
+    filterset_class = EventFilter
+    pagination_class = EventPagination

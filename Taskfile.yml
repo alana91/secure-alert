@@ -26,3 +26,8 @@ tasks:
     desc: Generate API docs using drf-spectacular
     cmds:
       - uv run manage.py spectacular --color --file schema.yml
+  test:
+    desc: Run all tests
+    cmds:
+      - uv run pytest
+

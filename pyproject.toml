@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "django-filter>=26.1",
     "djangorestframework>=3.17.1",
     "drf-spectacular>=0.30.0",
 ]
@@ -15,3 +16,6 @@ dev = [
     "pytest-django>=4.12.0",
     "ruff>=0.15.22",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "secure_alert.settings"
