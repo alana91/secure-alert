@@ -127,13 +127,13 @@ Tools/stack/tech of choice and reasoning for choosing them.
 
 ## Improvements to be implemented
 
-- Configure a test workflow with a separate DB. For the sake of simplicity, this app uses the same DB for all workflows - running the app, testing.
 - Create docker image and configure running app, tests, etc. in containers.
 - Add token-based authentication to `GET` endpoints and device-compatible authentication (specifics to be figured out) to `POST` endpoint.
 - Replace SQLite with [PostgreSQL](https://www.postgresql.org/) for robustness in production, specially the speed of reads (including JSON columns).
 - Modify choice of libs/frameworks to be able to use async fully. Options: remove DRF use (Django by itself supports async); replace Django and DRF with [FastAPI](https://fastapi.tiangolo.com/); or customize by overriding and rewriting DRF view code (the blocker for full async use).
 - Use [pre-commit](https://pre-commit.com/), or similar, to check, link and format code before each commit.
 - Add logging and metrics.
+- Add rate limit for event creation, and add a limit to the consultation datetime range for the summary endpoint.
 
 ## Generative AI use disclaimer
 
