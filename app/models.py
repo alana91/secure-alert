@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinLengthValidator
 
 
 class Event(models.Model):
@@ -15,6 +16,7 @@ class Event(models.Model):
         blank=False,
         unique=True,
         max_length=64,
+        validators=[MinLengthValidator(limit_value=3)],
         help_text="ID of the device that originated the event",
     )
     event_type = models.CharField(

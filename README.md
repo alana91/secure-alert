@@ -23,7 +23,7 @@ cp .env.template .env
 ```shell
 SECRET_KEY="django-insecure-35%=i6j36#oc&_iwx3f4_e9k93lwp7e&af*^gdt=12kxi!*jla"
 DEBUG=1
-ALLOWED_HOSTS=["127.0.0.1"]
+ALLOWED_HOSTS="127.0.0.1,localhost"
 ```
 
 `SECRET_KEY` is required, while other values are optional (they have defaults).

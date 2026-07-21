@@ -22,3 +22,7 @@ tasks:
     desc: Run application locally on port 8000
     cmds:
       - uv run manage.py runserver
+  create-docs:
+    desc: Generate API docs using drf-spectacular
+    cmds:
+      - uv run manage.py spectacular --color --file schema.yml
