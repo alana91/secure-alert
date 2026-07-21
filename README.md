@@ -97,6 +97,14 @@ Using the command directly
 uv run manage.py makemigrations
 ```
 
+## API docs
+
+Once you run the application, API docs are available at:
+
+- <http://localhost:8000/api/schema/swagger-ui/>
+- <http://localhost:8000/api/schema/redoc/>
+
+
 ## Troubleshooting
 
 Depending on your operational system, support for JSON columns ([JSON1 extension](https://code.djangoproject.com/wiki/JSON1Extension)) may not be enabled by default in you python's installation. It is, however, included for most systems in modern python versions, including python 3.14.
