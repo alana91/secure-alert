@@ -1,6 +1,6 @@
 from app.models import Event
 from app.serializers import EventSerializer, SummarySerializer
-from app.filters import EventFilter
+from app.filters import EventFilter, SummaryFilter
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 from app.pagination import EventPagination
@@ -26,10 +26,10 @@ class EventViewSet(
     filterset_class = EventFilter
     pagination_class = EventPagination
 
-    @extend_schema(responses=SummarySerializer)
-    @action(detail=False)
+    @extend_schema(responses=SummarySerializer, filters=True)
+    @action(detail=False, filterset_class=SummaryFilter)
     def summary(self, requests):
-        qs = self.get_queryset()
+        qs = self.filter_queryset(self.get_queryset())
         total = qs.count()
         if total == 0:
             serializer = SummarySerializer({})

@@ -84,10 +84,14 @@ def test_pagination(client: APIClient):
 
 @pytest.mark.django_db
 def test_summary_most_active_device(client: APIClient):
-    baker.make(Event, device_id="very_active", _quantity=3)
-    baker.make(Event, device_id="not_so_active_1", _quantity=1)
-    baker.make(Event, device_id="not_so_active_2", _quantity=2)
-    response = client.get("/events/summary/")
+    timestamp = "2026-07-21T11:01:00Z"
+    baker.make(Event, device_id="very_active", timestamp=timestamp, _quantity=3)
+    baker.make(Event, device_id="not_so_active_1", timestamp=timestamp, _quantity=1)
+    baker.make(Event, device_id="not_so_active_2", timestamp=timestamp, _quantity=2)
+    response = client.get(
+        "/events/summary/",
+        data={"timestamp_from": timestamp, "timestamp_to": timestamp},
+    )
     assert response.status_code == 200
     assert response.data["total_events"] == 6
     assert response.data["most_active_device"] == "very_active"
@@ -95,10 +99,14 @@ def test_summary_most_active_device(client: APIClient):
 
 @pytest.mark.django_db
 def test_summary_by_severity(client: APIClient):
-    baker.make(Event, severity="low", _quantity=2)
-    baker.make(Event, severity="medium", _quantity=4)
-    baker.make(Event, severity="high", _quantity=8)
-    response = client.get("/events/summary/")
+    timestamp = "2026-07-21T11:01:00Z"
+    baker.make(Event, severity="low", timestamp=timestamp, _quantity=2)
+    baker.make(Event, severity="medium", timestamp=timestamp, _quantity=4)
+    baker.make(Event, severity="high", timestamp=timestamp, _quantity=8)
+    response = client.get(
+        "/events/summary/",
+        data={"timestamp_from": timestamp, "timestamp_to": timestamp},
+    )
     assert response.status_code == 200
     assert response.data["total_events"] == 14
     assert response.data["by_severity"]["low"] == 2
@@ -108,10 +116,14 @@ def test_summary_by_severity(client: APIClient):
 
 @pytest.mark.django_db
 def test_summary_by_event_type(client: APIClient):
-    baker.make(Event, event_type="motion_detected", _quantity=2)
-    baker.make(Event, event_type="intrusion_alert", _quantity=4)
-    baker.make(Event, event_type="camera_offline", _quantity=8)
-    response = client.get("/events/summary/")
+    timestamp = "2026-07-21T11:01:00Z"
+    baker.make(Event, event_type="motion_detected", timestamp=timestamp, _quantity=2)
+    baker.make(Event, event_type="intrusion_alert", timestamp=timestamp, _quantity=4)
+    baker.make(Event, event_type="camera_offline", timestamp=timestamp, _quantity=8)
+    response = client.get(
+        "/events/summary/",
+        data={"timestamp_from": timestamp, "timestamp_to": timestamp},
+    )
     assert response.status_code == 200
     assert response.data["total_events"] == 14
     assert response.data["by_event_type"]["motion_detected"] == 2
@@ -121,17 +133,25 @@ def test_summary_by_event_type(client: APIClient):
 
 @pytest.mark.django_db
 def test_summary_high_severity_rate(client: APIClient):
-    baker.make(Event, severity="low", _quantity=1)
-    baker.make(Event, severity="medium", _quantity=1)
-    baker.make(Event, severity="high", _quantity=2)
-    response = client.get("/events/summary/")
+    timestamp = "2026-07-21T11:01:00Z"
+    baker.make(Event, severity="low", timestamp=timestamp, _quantity=1)
+    baker.make(Event, severity="medium", timestamp=timestamp, _quantity=1)
+    baker.make(Event, severity="high", timestamp=timestamp, _quantity=2)
+    response = client.get(
+        "/events/summary/",
+        data={"timestamp_from": timestamp, "timestamp_to": timestamp},
+    )
     assert response.status_code == 200
     assert response.data["high_severity_rate"] == 0.5
 
 
 @pytest.mark.django_db
 def test_summary_with_zero_events(client: APIClient):
-    response = client.get("/events/summary/")
+    timestamp = "2026-07-21T11:01:00Z"
+    response = client.get(
+        "/events/summary/",
+        data={"timestamp_from": timestamp, "timestamp_to": timestamp},
+    )
     assert response.status_code == 200
     assert response.data["total_events"] == 0
     assert response.data["most_active_device"] == ""
@@ -142,3 +162,51 @@ def test_summary_with_zero_events(client: APIClient):
     assert response.data["by_event_type"]["intrusion_alert"] == 0
     assert response.data["by_event_type"]["camera_offline"] == 0
     assert response.data["high_severity_rate"] == 0.0
+
+
+@pytest.mark.django_db
+def test_filter_summary(client: APIClient):
+    timestamp = "2026-07-21T11:01:00Z"
+    baker.make(
+        Event,
+        device_id="camera1",
+        severity="high",
+        event_type="intrusion_alert",
+        timestamp=timestamp,
+    )
+    baker.make(
+        Event,
+        device_id="camera1",
+        severity="high",
+        event_type="intrusion_alert",
+        timestamp="2027-07-21T11:01:00Z",
+    )
+    baker.make(
+        Event,
+        device_id="camera1",
+        severity="high",
+        event_type="intrusion_alert",
+        timestamp="2025-07-21T11:01:00Z",
+    )
+    baker.make(
+        Event,
+        device_id="camera2",
+        severity="high",
+        event_type="intrusion_alert",
+        timestamp="2025-07-21T11:01:00Z",
+        _quantity=4,
+    )
+    response = client.get(
+        "/events/summary/",
+        data={"timestamp_from": timestamp, "timestamp_to": timestamp},
+    )
+    assert response.status_code == 200
+    assert response.data["total_events"] == 1
+    assert response.data["most_active_device"] == "camera1"
+    assert response.data["by_severity"]["low"] == 0
+    assert response.data["by_severity"]["medium"] == 0
+    assert response.data["by_severity"]["high"] == 1
+    assert response.data["by_event_type"]["motion_detected"] == 0
+    assert response.data["by_event_type"]["intrusion_alert"] == 1
+    assert response.data["by_event_type"]["camera_offline"] == 0
+    assert response.data["high_severity_rate"] == 1.0
