@@ -2,7 +2,7 @@
 
 Fictional security alert system for receiving, storing and serving security event data originating from devices, such as security cameras.
 
-Built considering an imagined time constraint, limiting the implementation to 3h. Design, framework, library and tool choices reflect the constraint.
+Built considering an imagined time constraint, limiting the implementation to 3h (final, actual time taken was ~7h). Design, framework, library and tool choices reflect the constraint.
 
 ## Project setup and running
 
@@ -34,7 +34,7 @@ ALLOWED_HOSTS="127.0.0.1,localhost"
 uv sync
 ```
 
-3. Run initial migrations (this creates Django admin user related tables)
+3. Run migrations (this creates Django admin user related tables and application tables)
 
 ```shell
 task migrate
@@ -64,7 +64,7 @@ Using the command directly
 uv run manage.py runserver
 ```
 
-The application will be served at <http://localhost:8000>.
+The application will be served at <http://localhost:8000>. Note that this is a dev server, not suitable for production.
 
 ### Lint and format the code
 
@@ -85,7 +85,7 @@ uv run ruff format
 
 Run whenever models are created or modified. This includes modifications such as in model field parameters, even for parameters like `help_text`. When in doubt, just run the command and check the output.
 
-Using tax
+Using Task
 
 ```shell
 task create-migration
@@ -106,9 +106,9 @@ Once you run the application, API docs are available at:
 
 ## Troubleshooting
 
-Depending on your operational system, support for JSON columns ([JSON1 extension](https://code.djangoproject.com/wiki/JSON1Extension)) may not be enabled by default in you python's installation. It is, however, included for most systems in modern python versions, including python 3.14.
+Depending on your operational system, support for JSON columns ([JSON1 extension](https://code.djangoproject.com/wiki/JSON1Extension)) in SQLite may not be enabled by default in you python's installation. It is, however, enabled for most systems in modern python versions, including python 3.14.
 
-If you face any sqlite, model or DB-related JSON errors:
+If you face any SQLite, model or DB-related JSON errors:
 
 1. Double check your python version
 2. Follow the instructions in the following page: <https://code.djangoproject.com/wiki/JSON1Extension>
@@ -131,7 +131,7 @@ Tools/stack/tech of choice and reasoning for choosing them.
 - Add token-based authentication to `GET` endpoints and device-compatible authentication (specifics to be figured out) to `POST` endpoint.
 - Replace SQLite with [PostgreSQL](https://www.postgresql.org/) for robustness in production, specially the speed of reads (including JSON columns).
 - Modify choice of libs/frameworks to be able to use async fully. Options: remove DRF use (Django by itself supports async); replace Django and DRF with [FastAPI](https://fastapi.tiangolo.com/); or customize by overriding and rewriting DRF view code (the blocker for full async use).
-- Use [pre-commit](https://pre-commit.com/), or similar, to check, link and format code before each commit.
+- Use [pre-commit](https://pre-commit.com/), or similar, to check, lint and format code before each commit.
 - Add logging and metrics.
 - Add rate limit for event creation, and add a limit to the consultation datetime range for the summary endpoint.
 
@@ -139,4 +139,4 @@ Tools/stack/tech of choice and reasoning for choosing them.
 
 The project was coded manually in order to accurately represent the author's raw coding skils. No form of agentic coding was used (claude, codex, copilot, etc.).
 
-Most search engines, including the one used by the author ([DuckDuckGo](https://duckduckgo.com)), implement AI generated responses, now; those have been consulted while doing research for the project implementation, specially when debugging errors.
+However, most search engines, including the one used by the author ([DuckDuckGo](https://duckduckgo.com)), implement AI generated responses, now; those have been consulted while doing research for the project implementation, especially when debugging errors.
